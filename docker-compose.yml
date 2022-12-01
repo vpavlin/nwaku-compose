@@ -1,0 +1,70 @@
+version: "3.7"
+x-logging: &logging
+  logging:
+    driver: json-file
+    options:
+      max-size: 1000m
+services:
+  nwaku:
+    #image: 'statusteam/nim-waku:deploy-status-prod'
+    image: statusteam/nim-waku:670035f3
+    restart: on-failure
+    volumes:
+      - ./data:/data
+    ports:
+      - 30304:30304/tcp
+      - 30304:30304/udp
+      - 9005:9005/udp
+      - 127.0.0.1:8003:8003
+    <<: *logging
+    command:
+      - --relay=true
+      - --filter=true
+      - --lightpush=true
+      - --store=true
+      - --rpc-admin=true
+      - --keep-alive=true
+      - --max-connections=150
+      - --dns-discovery=true
+      - --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@prod.nodes.status.im
+      - --discv5-discovery=true
+      - --discv5-udp-port=9005
+      - --discv5-enr-auto-update=True
+      - --log-level=DEBUG
+      - --rpc-port=8545
+      - --rpc-address=0.0.0.0
+      - --tcp-port=30304
+      - --metrics-server=True
+      - --metrics-server-port=8003
+      - --metrics-server-address=0.0.0.0
+      - --nat=extip:${MY_EXT_IP}
+      #- --store-message-db-url='sqlite:///data/store.sqlite3'
+      #- --store-message-retention-policy=time:2592000
+
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+    ports:
+      - 127.0.0.1:9090:9090
+    restart: on-failure
+
+  grafana:
+    image: grafana/grafana:latest
+    env_file:
+      - ./monitoring/configuration/grafana-plugins.env
+    volumes:
+      - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini
+      - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
+      - ./monitoring/configuration/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
+      - ./monitoring/configuration/dashboards:/var/lib/grafana/dashboards/
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_icon.svg
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg
+      - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png
+    ports:
+      - 127.0.0.1:3000:3000
+    restart: on-failure
+    depends_on:
+      - prometheus
