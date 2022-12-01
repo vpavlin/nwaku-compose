@@ -24,7 +24,9 @@ Start everything: `nwaku`, `prometheus` and `grafana`.
 docker-compose up -d
 ```
 
-Go to [http://localhost:3000/d/yns_4vFVk/nwaku-monitoring?orgId=1](http://localhost:3000/d/yns_4vFVk/nwaku-monitoring?orgId=1) and after some seconds, your node metrics will be live there. As simple as that.
+Go to [http://localhost:3000/d/yns_4vFVk/nwaku-monitoring?orgId=1](http://localhost:3000/d/yns_4vFVk/nwaku-monitoring?orgId=1) and after some seconds, your node metrics will be live there, just like in the picture. As simple as that.
+
+![grafana-dashboard](https://i.ibb.co/C6m7JHN/Screenshot-2022-12-01-at-11-09-28.png)
 
 
 Notes:
