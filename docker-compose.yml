@@ -7,7 +7,7 @@ x-logging: &logging
 services:
   nwaku:
     #image: 'statusteam/nim-waku:deploy-status-prod'
-    image: statusteam/nim-waku:670035f3
+    image: statusteam/nim-waku:982cd282
     restart: on-failure
     volumes:
       - ./data:/data
