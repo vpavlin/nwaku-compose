@@ -35,6 +35,8 @@ services:
     <<: *logging
     command:
       - --relay=true
+      # Select the topics to subscribe to. If empty default is selected
+      - --topics=/waku/2/dev-waku/proto
       - --filter=true
       - --lightpush=true
       - --store=true
