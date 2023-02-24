@@ -6,8 +6,24 @@ x-logging: &logging
       max-size: 1000m
 services:
   nwaku:
-    #image: 'statusteam/nim-waku:deploy-status-prod'
-    image: statusteam/nim-waku:982cd282
+    # Provide the image using any of these methods
+
+    # Method 1. Custom build
+    # For a custom build, requires building your image
+    # from nwaku repo: docker build -t nwaku:mytag .
+    #image: nwaku:mytag
+
+    # Method 2. Pre-built image (master commit)
+    # For a pre-built image, use the firt 8 digits of the commit hash
+    # all commits in nwaku master al built and pushed to dockerhub
+    # See: hub.docker.com/r/statusteam/nim-waku
+    #image: statusteam/nim-waku:982cd282
+
+    # Method 3. Pre-built release
+    # For a pre-built release. See available releases:
+    # github.com/waku-org/nwaku/releases
+    image: statusteam/nim-waku:v0.15.0
+
     restart: on-failure
     volumes:
       - ./data:/data
@@ -26,7 +42,11 @@ services:
       - --keep-alive=true
       - --max-connections=150
       - --dns-discovery=true
-      - --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@prod.nodes.status.im
+      # Pick one
+      - --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@prod.waku.nodes.status.im
+      #- --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@test.waku.nodes.status.im
+      #- --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@test.nodes.status.im
+      #- --dns-discovery-url=enrtree://AOGECG2SPND25EEFMAJ5WF3KSGJNSGV356DSTL2YVLLZWIV6SAYBM@prod.nodes.status.im
       - --discv5-discovery=true
       - --discv5-udp-port=9005
       - --discv5-enr-auto-update=True
@@ -38,6 +58,9 @@ services:
       - --metrics-server-port=8003
       - --metrics-server-address=0.0.0.0
       - --nat=extip:${MY_EXT_IP}
+      #- --storenode=/dns4/node-01.do-ams3.wakuv2.prod.statusim.net/tcp/30303/p2p/16Uiu2HAmL5okWopX7NqZWBUKVqW8iUxCEmd5GMHLVPwCgzYzQv3e
+      #- --peer-exchange-node=/dns4/node-01.do-ams3.wakuv2.prod.statusim.net/tcp/30303/p2p/16Uiu2HAmL5okWopX7NqZWBUKVqW8iUxCEmd5GMHLVPwCgzYzQv3e
+      #- --peer-exchange-node=/dns4/node-01.do-ams3.wakuv2.prod.statusim.net/tcp/30304/p2p/16Uiu2HAmL5okWopX7NqZWBUKVqW8iUxCEmd5GMHLVPwCgzYzQv3e
       #- --store-message-db-url='sqlite:///data/store.sqlite3'
       #- --store-message-retention-policy=time:2592000
 
