@@ -27,6 +27,8 @@ services:
     restart: on-failure
     volumes:
       - ./data:/data:Z
+    networks:
+      nwaku: {}
     ports:
       - 30304:30304/tcp
       - 30304:30304/udp
@@ -74,6 +76,9 @@ services:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
       - 127.0.0.1:9090:9090
+    networks:
+      oauth2-proxy: {}
+      nwaku: {}
     restart: on-failure
 
   grafana:
@@ -91,5 +96,17 @@ services:
     ports:
       - 127.0.0.1:3000:3000
     restart: on-failure
+    networks:
+      oauth2-proxy: {}
     depends_on:
       - prometheus
+
+  oauth2-proxy:
+    ports: []
+    hostname: oauth2-proxy
+    volumes:
+      - "./oauth2-proxy-nginx.cfg:/oauth2-proxy.cfg"
+    networks:
+      oauth2-proxy: {}
+    depends_on:
+      - grafana
