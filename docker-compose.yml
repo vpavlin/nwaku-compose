@@ -4,6 +4,9 @@ x-logging: &logging
     driver: json-file
     options:
       max-size: 1000m
+networks:
+  oauth2-proxy:
+  nwaku:
 services:
   nwaku:
     # Provide the image using any of these methods
@@ -28,7 +31,7 @@ services:
     volumes:
       - ./data:/data:Z
     networks:
-      nwaku: {}
+      - nwaku
     ports:
       - 30304:30304/tcp
       - 30304:30304/udp
@@ -77,8 +80,8 @@ services:
     ports:
       - 127.0.0.1:9090:9090
     networks:
-      oauth2-proxy: {}
-      nwaku: {}
+      - oauth2-proxy
+      - nwaku
     restart: on-failure
 
   grafana:
@@ -97,16 +100,17 @@ services:
       - 127.0.0.1:3000:3000
     restart: on-failure
     networks:
-      oauth2-proxy: {}
+      - oauth2-proxy
     depends_on:
       - prometheus
 
   oauth2-proxy:
     ports: []
     hostname: oauth2-proxy
+    image: quay.io/oauth2-proxy/oauth2-proxy
     volumes:
-      - "./oauth2-proxy-nginx.cfg:/oauth2-proxy.cfg"
+      - "./oauth2-proxy.cfg:/oauth2-proxy.cfg"
     networks:
-      oauth2-proxy: {}
+      - oauth2-proxy
     depends_on:
       - grafana
