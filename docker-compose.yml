@@ -22,7 +22,7 @@ services:
     # Method 3. Pre-built release
     # For a pre-built release. See available releases:
     # github.com/waku-org/nwaku/releases
-    image: statusteam/nim-waku:v0.15.0
+    image: statusteam/nim-waku:v0.17.0
 
     restart: on-failure
     volumes:
