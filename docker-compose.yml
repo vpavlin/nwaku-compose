@@ -22,11 +22,11 @@ services:
     # Method 3. Pre-built release
     # For a pre-built release. See available releases:
     # github.com/waku-org/nwaku/releases
-    image: statusteam/nim-waku:v0.15.0
+    image: docker.io/statusteam/nim-waku:v0.16.0
 
     restart: on-failure
     volumes:
-      - ./data:/data
+      - ./data:/data:Z
     ports:
       - 30304:30304/tcp
       - 30304:30304/udp
@@ -67,9 +67,9 @@ services:
       #- --store-message-retention-policy=time:2592000
 
   prometheus:
-    image: prom/prometheus:latest
+    image: docker.io/prom/prometheus:latest
     volumes:
-      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml
+      - ./monitoring/prometheus-config.yml:/etc/prometheus/prometheus.yml:Z
     command:
       - --config.file=/etc/prometheus/prometheus.yml
     ports:
@@ -77,17 +77,17 @@ services:
     restart: on-failure
 
   grafana:
-    image: grafana/grafana:latest
+    image: docker.io/grafana/grafana:latest
     env_file:
       - ./monitoring/configuration/grafana-plugins.env
     volumes:
-      - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini
-      - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml
-      - ./monitoring/configuration/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml
-      - ./monitoring/configuration/dashboards:/var/lib/grafana/dashboards/
-      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_icon.svg
-      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg
-      - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png
+      - ./monitoring/configuration/grafana.ini:/etc/grafana/grafana.ini:Z
+      - ./monitoring/configuration/dashboards.yaml:/etc/grafana/provisioning/dashboards/dashboards.yaml:Z
+      - ./monitoring/configuration/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:Z
+      - ./monitoring/configuration/dashboards:/var/lib/grafana/dashboards/:Z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_icon.svg:Z
+      - ./monitoring/configuration/customizations/custom-logo.svg:/usr/share/grafana/public/img/grafana_typelogo.svg:Z
+      - ./monitoring/configuration/customizations/custom-logo.png:/usr/share/grafana/public/img/fav32.png:Z
     ports:
       - 127.0.0.1:3000:3000
     restart: on-failure
